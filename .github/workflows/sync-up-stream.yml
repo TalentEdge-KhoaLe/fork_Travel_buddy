@@ -3,42 +3,27 @@ name: Sync with Upstream
 on:
   schedule:
     - cron: "0 0 * * *" # Runs daily at midnight UTC
-  workflow_dispatch: # Allows manual triggering of the workflow
+  workflow_dispatch: # Allows manual trigger
 
 jobs:
   sync:
     runs-on: ubuntu-latest
 
     steps:
-      # Checkout your fork repository
-      - name: Checkout the repository
-        uses: actions/checkout@v3
-        with:
-          token: ${{ secrets.UPSTREAM_TOKEN }} # Use the secret token for authentication
+    - name: Checkout Fork
+      uses: actions/checkout@v3
+      with:
+        token: ${{ secrets.PAT_TOKEN }}
 
-      # Set up Git user for commit purposes
-      - name: Set up Git
-        run: |
-          git config --global user.name "TalentEdge-Khoa Le"
-          git config --global user.email "khoa.le@talentedge.ai"
+    - name: Add Upstream Repository
+      run: |
+        git remote add upstream https://github.com/talentedgeai/travel-buddy-prj.git
+        git fetch upstream
+        git checkout main
+        git merge upstream/main
 
-      # Add the upstream repository
-      - name: Add upstream repository
-        env:
-          UPSTREAM_URL: github.com/talentedgeai/travel-buddy-prj.git
-        run: |
-          git remote add upstream https://${{ secrets.UPSTREAM_TOKEN }}@${{ env.UPSTREAM_URL }}
-          git fetch upstream
-
-      # Merge changes from the upstream repository
-      - name: Merge upstream changes
-        run: |
-          git checkout main
-          git merge --no-edit upstream/main || echo "Merge conflicts detected; manual resolution required."
-
-      # Push changes to the fork repository
-      - name: Push changes to fork
-        env:
-          REPO_URL: github.com/TalentEdge-KhoaLe/fork_Travel_buddy.git
-        run: |
-          git push https://${{ secrets.UPSTREAM_TOKEN }}@${{ env.REPO_URL }} main
+    - name: Push Changes to Fork
+      run: |
+        git push origin main
+      env:
+        GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
