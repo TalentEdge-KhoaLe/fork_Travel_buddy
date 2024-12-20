@@ -14,7 +14,7 @@ jobs:
       - name: Checkout the repository
         uses: actions/checkout@v3
         with:
-          token: ${{ secrets.GITHUB_TOKEN }} # Use the built-in GitHub token
+          token: ${{ secrets.UPSTREAM_TOKEN }} # Use the secret token for authentication
 
       # Set up Git user for commit purposes
       - name: Set up Git
@@ -24,8 +24,10 @@ jobs:
 
       # Add the upstream repository
       - name: Add upstream repository
+        env:
+          UPSTREAM_URL: https://github.com/talentedgeai/travel-buddy-prj.git
         run: |
-          git remote add upstream https://github.com/talentedgeai/travel-buddy-prj.git
+          git remote add upstream https://${{ secrets.UPSTREAM_TOKEN }}@${{ env.UPSTREAM_URL }}
           git fetch upstream
 
       # Merge changes from the upstream repository
@@ -37,6 +39,6 @@ jobs:
       # Push changes to the fork repository
       - name: Push changes to fork
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO_URL: https://github.com/TalentEdge-KhoaLe/fork_Travel_buddy.git
         run: |
-          git push origin main
+          git push https://${{ secrets.UPSTREAM_TOKEN }}@${{ env.REPO_URL }} main
