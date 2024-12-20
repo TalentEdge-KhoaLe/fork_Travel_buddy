@@ -10,28 +10,33 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # Checkout your fork repository
       - name: Checkout the repository
         uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }} # Use the built-in GitHub token
 
+      # Set up Git user for commit purposes
       - name: Set up Git
         run: |
           git config --global user.name "TalentEdge-Khoa Le"
           git config --global user.email "khoa.le@talentedge.ai"
 
+      # Add the upstream repository
       - name: Add upstream repository
-        env:
-            UPSTREAM_URL: https://github.com/talentedgeai/travel-buddy-prj.git
         run: |
-          git remote add upstream https://${{ secrets.TOKEN }}@${{ env.UPSTREAM_URL }}
+          git remote add upstream https://github.com/talentedgeai/travel-buddy-prj.git
+          git fetch upstream
 
-
+      # Merge changes from the upstream repository
       - name: Merge upstream changes
         run: |
           git checkout main
-          git merge upstream/main
+          git merge --no-edit upstream/main || echo "Merge conflicts detected; manual resolution required."
 
+      # Push changes to the fork repository
       - name: Push changes to fork
         env:
-          GITHUB_TOKEN: ${{ secrets.TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           git push origin main
