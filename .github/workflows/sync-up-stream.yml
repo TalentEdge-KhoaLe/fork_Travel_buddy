@@ -25,7 +25,7 @@ jobs:
       # Add the upstream repository
       - name: Add upstream repository
         env:
-          UPSTREAM_URL: https://github.com/talentedgeai/travel-buddy-prj.git
+          UPSTREAM_URL: github.com/talentedgeai/travel-buddy-prj.git
         run: |
           git remote add upstream https://${{ secrets.UPSTREAM_TOKEN }}@${{ env.UPSTREAM_URL }}
           git fetch upstream
@@ -39,6 +39,6 @@ jobs:
       # Push changes to the fork repository
       - name: Push changes to fork
         env:
-          REPO_URL: https://github.com/TalentEdge-KhoaLe/fork_Travel_buddy.git
+          REPO_URL: github.com/TalentEdge-KhoaLe/fork_Travel_buddy.git
         run: |
           git push https://${{ secrets.UPSTREAM_TOKEN }}@${{ env.REPO_URL }} main
