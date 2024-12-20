@@ -19,9 +19,11 @@ jobs:
           git config --global user.email "khoa.le@talentedge.ai"
 
       - name: Add upstream repository
+        env:
+            UPSTREAM_URL: https://github.com/talentedgeai/travel-buddy-prj.git
         run: |
-          git remote add upstream https://github.com/talentedgeai/travel-buddy-prj.git
-          git fetch upstream
+          git remote add upstream https://${{ secrets.TOKEN }}@${{ env.UPSTREAM_URL }}
+
 
       - name: Merge upstream changes
         run: |
